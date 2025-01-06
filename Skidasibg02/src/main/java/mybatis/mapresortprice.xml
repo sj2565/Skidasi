@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MapperResortPrice">
+	<select id="SelectResortInfoByPk" resultType="MyResort">
+		select resort_no, resort_name, RESORT_ADDR 
+		from resort_info
+		where resort_no = #{resort_no}
+	</select>
+	
+	<insert id="InsertData" parameterType="MyPrice">
+		insert into RESORT_PR (PR_NO,PR_HOUR,PR_AORC, PR_PRICE, RESORT_NO) 
+		values (priceseq.nextval, #{pr_hour}, #{pr_aorc}, #{pr_price}, #{resort_no})
+	</insert>
+	
+	<select id="SelectData" resultType="MyPrice">
+		SELECT PR.PR_NO, PR.PR_HOUR, PR.PR_AORC, PR.PR_PRICE, PR.RESORT_NO, INFO.RESORT_NAME 
+		FROM RESORT_PR PR
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO 
+	</select>
+	
+	<delete id="DeleteData" parameterType="String">
+		DELETE FROM RESORT_PR
+		WHERE PR_NO = #{pr_no}
+	</delete>
+	
+	<select id="SelectResortPriceByPk" resultType="MyPrice">
+		SELECT PR.PR_NO, PR.PR_HOUR, PR.PR_AORC, PR.PR_PRICE, PR.RESORT_NO, INFO.RESORT_NAME 
+		FROM RESORT_PR PR
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO 
+		WHERE PR.PR_NO = #{pr_no}
+	</select>
+	
+	<update id="UpdateData" parameterType="MyPrice">
+		UPDATE RESORT_PR SET
+		PR_HOUR = #{pr_hour},
+		PR_AORC = #{pr_aorc}, 
+		PR_PRICE = #{pr_price}
+		WHERE PR_NO = #{pr_no}
+	</update>
+</mapper>

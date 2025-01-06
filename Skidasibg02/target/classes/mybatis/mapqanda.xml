@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MapperQanda">
+	<select id="SelectTotalCount" resultType="int">
+		select count(*) as cnt from qandas	
+		<if test="mode == 'qnacont'">
+			where QNACONT like #{keyword}
+		</if>
+		<if test="mode == 'qnatitle'">
+			where qnatitle like #{keyword}
+		</if>
+		<if test="mode == 'member_id'">
+			where MEMBER_ID like #{keyword}
+		</if>
+	</select>
+	<sql id="myselect">
+		select 
+		QNACODE, QNATITLE, QNAPAW, QNACONT, QNAHIT,  QNAWDATE,
+		QNA_REMARK, QNA_GROUPNO, QNA_ORDERNO, QNA_DEPTH, MEMBER_ID
+		from qandas
+	</sql> 	
+	<select id="SelectDataList" resultType="MyQanda">
+		<include refid="myselect" />
+		<if test="mode == 'qnacont'">
+			where QNACONT like #{keyword}
+		</if>
+		<if test="mode == 'qnatitle'">
+			where QNATITLE like #{keyword}
+		</if>
+		<if test="mode == 'member_id'">
+			where MEMBER_ID like #{keyword}
+		</if>
+		order by QNA_GROUPNO desc, QNA_ORDERNO asc 
+	</select>
+	<insert id="InsertData" parameterType="MyQanda">
+		insert into 
+		qandas (QNACODE, QNATITLE, QNAPAW, QNACONT, QNAHIT, QNAWDATE, QNA_REMARK, QNA_GROUPNO, QNA_ORDERNO, QNA_DEPTH, MEMBER_ID)		
+		values (myqna.nextval, #{qnatitle}, #{qnapaw}, #{qnacont}, #{qnahit}, to_date(sysdate, 'yyyy/mm/dd'), #{qna_remark}, myqna.currval, #{qna_orderno}, #{qna_depth}, #{member_id})
+	</insert>
+	
+	<select id="SelectDataByPk" parameterType="Integer" resultType="MyQanda">
+		<include refid="myselect"></include>
+		where QNACODE = #{qnacode}
+	</select>
+	
+	<delete id="DeleteData">
+		delete from qandas
+		where QNACODE = #{qnacode}
+	</delete>
+	
+	<update id="UpdateReadhit" parameterType="int">
+		update qandas set 
+		qnahit = qnahit + 1 
+		where QNACODE = #{qnacode}
+	</update>
+	
+	<insert id="ReplyDataInsert" parameterType="MyQanda">
+		insert into 
+		qandas (QNACODE, QNATITLE, QNAPAW, QNACONT, QNAHIT, QNAWDATE, QNA_REMARK, QNA_GROUPNO, QNA_ORDERNO, QNA_DEPTH, MEMBER_ID)		
+		values (myqna.nextval, #{qnatitle}, #{qnapaw}, #{qnacont}, #{qnahit}, to_date(sysdate, 'yyyy/mm/dd'), #{qna_remark}, #{qna_groupno}, #{qna_orderno}, #{qna_depth}, #{member_id})	
+	</insert>
+	
+	<update id="ReplyDataUpdate">
+		update qandas set 
+		qna_orderno = qna_orderno + 1 
+		where qna_groupno = #{qna_groupno} and qna_orderno > #{qna_orderno}		
+	</update>
+	
+	<update id="UpdateData" parameterType="MyQanda">
+		update qandas set 
+		QNATITLE=#{qnatitle}, 
+		QNAPAW=#{qnapaw}, 
+		QNACONT=#{qnacont}, 
+		qnawdate=to_date(sysdate, 'yyyy/mm/dd'), 
+		QNA_REMARK = #{qna_remark}
+		where QNACODE = #{qnacode} 
+	</update>
+</mapper>

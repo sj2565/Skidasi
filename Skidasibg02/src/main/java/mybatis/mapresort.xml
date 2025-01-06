@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MapperResort">
+	<select id="SelectTotalCount" resultType="int">
+		select count(*) as cnt from resort_info	
+	</select>
+	
+	<insert id="InsertData" parameterType="MyResort">
+		insert into resort_info (RESORT_NO, RESORT_AREA, RESORT_NAME, RESORT_TEL, RESORT_ADDR, RESORT_CONT, RESORT_IMG)
+		values (resortseq.nextval, #{resort_area}, #{resort_name}, #{resort_tel}, #{resort_addr}, #{resort_cont}, #{resort_img})
+	</insert>
+	
+	<sql id="myselect">
+		select RESORT_NO, RESORT_AREA, RESORT_NAME, RESORT_TEL, RESORT_ADDR, RESORT_CONT, RESORT_IMG
+		from resort_info
+	</sql>
+	
+	<select id="SelectData" resultType="MyResort">
+		<include refid="myselect" />
+	</select>
+	
+	<select id="SelectDataByPk" resultType="MyResort">
+		<include refid="myselect"></include>
+		where RESORT_NO = #{resort_no}
+	</select>
+	
+	<update id="UpdateData" parameterType="MyResort">
+		update resort_info set
+			RESORT_AREA = #{resort_area},
+			RESORT_NAME = #{resort_name},
+			RESORT_TEL = #{resort_tel},
+			RESORT_ADDR = #{resort_addr},
+			RESORT_CONT = #{resort_cont},
+			RESORT_IMG = #{resort_img}
+		where RESORT_NO = #{resort_no}
+	</update>
+	
+	<delete id="DeleteData" parameterType="MyResort">
+		delete from resort_info
+		where RESORT_NO = #{resort_no}
+	</delete>
+</mapper>

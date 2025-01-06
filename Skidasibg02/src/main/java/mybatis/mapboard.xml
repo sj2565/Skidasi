@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MapperBoard">
+	<select id="SelectTotalCount" resultType="int">
+		select count(*) as cnt from boards
+		<if test="mode == 'subject'">
+			where notititle like #{keyword}
+		</if>
+		<if test="mode == 'content'">
+			where noticont like #{keyword}
+		</if>
+	</select>
+	<sql id="myselect">
+		select noticode, notititle, noticont, to_char( notidate,'YY/MM/DD') as notidate
+		from boards
+	</sql> 	
+	<select id="SelectDataList" resultType="MyBoard">
+		<include refid="myselect" />
+		<if test="mode == 'subject'">
+			where notititle like #{keyword}
+		</if>
+		<if test="mode == 'content'">
+			where noticont like #{keyword}
+		</if>
+		order by noticode 
+	</select>
+	<insert id="InsertData" parameterType="MyBoard">
+		insert into 
+		boards(noticode, notititle, noticont, notidate)
+		values(myboard.nextval, #{notititle}, #{noticont}, sysdate)
+	</insert>
+	
+	<select id="SelectDataByPk" parameterType="Integer" resultType="MyBoard">
+		<include refid="myselect"></include>
+		where noticode = #{noticode}
+	</select>	
+	
+	<update id="UpdateData" parameterType="MyBoard">
+		update boards set 
+		notititle =#{notititle},
+		noticont=#{noticont},
+		notidate=to_date(sysdate, 'yyyy/mm/dd')
+		where noticode = #{noticode} 
+	</update>
+	
+	<delete id="DeleteData" parameterType="int">
+		delete from boards where noticode = #{noticode} 
+	</delete>
+	
+</mapper>

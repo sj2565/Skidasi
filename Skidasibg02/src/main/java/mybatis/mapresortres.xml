@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MapperResortRes">
+	<select id="SelectPriceData" resultType="MyPrice">
+		SELECT PR.PR_NO, PR.RESORT_NO, PR.PR_PRICE, PR.PR_HOUR, PR.PR_AORC, INFO.RESORT_NAME, INFO.RESORT_IMG
+		from RESORT_PR PR
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO
+	</select>
+	
+	<select id="SelectPriceDataByPk" resultType="MyPrice">
+		SELECT PR.PR_NO, PR.RESORT_NO, PR.PR_PRICE, PR.PR_HOUR, PR.PR_AORC, INFO.RESORT_NAME 
+		from RESORT_PR PR
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO
+		WHERE PR.PR_NO = #{PR_NO}
+	</select>
+	
+	<insert id="InsertData" parameterType="MyRes">
+		INSERT INTO RESORT_RES (RES_NO, RES_DATE, RES_STATE, RES_AMOUNT, MEMBER_ID, PR_NO) 
+		VALUES( RESSEQ.NEXTVAL, #{res_date}, 'Y', #{res_amount}, #{member_id}, #{pr_no})
+	</insert>
+	
+	<select id="SelectDataList" resultType="MyRes" parameterType="String">
+		SELECT 
+			RES.RES_NO, RES.RES_DATE, DECODE(RES.RES_STATE,'Y','정상예약','N','취소') AS RES_STATE,
+			RES.RES_AMOUNT, RES.MEMBER_ID, 
+			RES.PR_NO, PR.PR_HOUR, PR.PR_PRICE, PR.PR_AORC, INFO.RESORT_NAME,MEM.NAME
+		FROM RESORT_RES RES
+		JOIN RESORT_PR PR
+		ON RES.PR_NO = PR.PR_NO
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO
+		JOIN MEMBERS MEM
+		ON RES.MEMBER_ID = MEM.MEMBER_ID
+		where RES.MEMBER_ID = #{member_id}
+	</select>
+	
+	<select id="SelectDataListforAdmin" resultType="MyRes">
+		SELECT 
+			RES.RES_NO, RES.RES_DATE, DECODE(RES.RES_STATE,'Y','정상예약','N','취소') AS RES_STATE, 
+			RES.RES_AMOUNT, RES.MEMBER_ID, 
+			RES.PR_NO, PR.PR_HOUR, PR.PR_PRICE, PR.PR_AORC, INFO.RESORT_NAME,MEM.NAME
+		FROM RESORT_RES RES
+		JOIN RESORT_PR PR
+		ON RES.PR_NO = PR.PR_NO
+		JOIN RESORT_INFO INFO
+		ON PR.RESORT_NO = INFO.RESORT_NO
+		JOIN MEMBERS MEM
+		ON RES.MEMBER_ID = MEM.MEMBER_ID
+	</select>
+	
+	<update id="CancelResByPk">
+		UPDATE RESORT_RES SET
+			RES_STATE = 'N'
+		WHERE RES_NO = #{res_no}
+	</update>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<!-- 마이바티스의 작동 규칙 정의 -->
+	<typeAliases>
+		<typeAlias alias="MyMember" type="bean.Member" />	
+		<typeAlias alias="MyBoard" type="bean.Board"/>
+		<typeAlias alias="MyQanda" type="bean.Qanda"/>
+		<typeAlias alias="MyResort" type="bean.ResortInfo"/>
+		<typeAlias alias="MyPrice" type="bean.ResortPrice"/>
+		<typeAlias alias="MyRes" type="bean.ResortRes"/>
+	</typeAliases>
+
+	<!-- mapper 태그 사용시 앞에 슬래시 붙이지 말고 패키지 경로 쭉~~~ 파일 이름 명시 -->
+	<mappers>
+		<mapper resource="mybatis/mapmember.xml" />
+		<mapper resource="mybatis/mapboard.xml"/>
+		<mapper resource="mybatis/mapqanda.xml"/>
+		<mapper resource="mybatis/mapresort.xml"/>
+		<mapper resource="mybatis/mapresortprice.xml"/>
+		<mapper resource="mybatis/mapresortres.xml"/>
+	</mappers>
+</configuration>
